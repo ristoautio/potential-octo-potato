@@ -1,15 +1,22 @@
 package com.somerandomapps.yata;
 
+import android.app.DialogFragment;
+import android.arch.persistence.room.Room;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import com.somerandomapps.yata.dialog.TodoCreateDialog;
+import com.somerandomapps.yata.repository.AppDatabase;
+import com.somerandomapps.yata.repository.TodoItem;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.List;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +33,15 @@ public class MainActivity extends AppCompatActivity {
     protected void fabClicked(View view) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+
+        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+        List<TodoItem> list = db.todoItemDao().getAll();
+        System.out.println("size " + list.size());
+        for (TodoItem todoItem : list) {
+            System.out.println("name " + todoItem.getName() + " -- id -- " + todoItem.getId());
+        }
+        DialogFragment dialog = new TodoCreateDialog();
+        dialog.show(getFragmentManager(), "foobar2");
     }
 
     @Override
