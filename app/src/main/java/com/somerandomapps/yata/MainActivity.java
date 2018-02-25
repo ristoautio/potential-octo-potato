@@ -2,44 +2,68 @@ package com.somerandomapps.yata;
 
 import android.app.DialogFragment;
 import android.arch.persistence.room.Room;
+import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
 import com.somerandomapps.yata.dialog.TodoCreateDialog;
 import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.*;
 
 import java.util.List;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "Main";
+
     @ViewById
     Toolbar toolbar;
+
+    @ViewById
+    TextView tvNoItems;
+
+    @ViewById
+    ListView lvItems;
+
+    List<TodoItem> list;
 
     @AfterViews
     protected void afterViews() {
         setSupportActionBar(toolbar);
+        updateList();
+    }
+
+    private void updateList() {
+        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+        list = db.todoItemDao().getAll();
+        if (list.isEmpty()) {
+            tvNoItems.setVisibility(View.VISIBLE);
+        }
+
+        TodoItemAdapter adapter = new TodoItemAdapter(list, getApplicationContext());
+        lvItems.setAdapter(adapter);
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TodoItem item = list.get(position);
+                Snackbar.make(view, "clicked item with name " + item.getName(), Snackbar.LENGTH_LONG)
+                        .setAction("No action", null).show();
+            }
+        });
+
     }
 
     @Click(R.id.fab)
     protected void fabClicked(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
-
-        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
-        List<TodoItem> list = db.todoItemDao().getAll();
-        System.out.println("size " + list.size());
-        for (TodoItem todoItem : list) {
-            System.out.println("name " + todoItem.getName() + " -- id -- " + todoItem.getId());
-        }
         DialogFragment dialog = new TodoCreateDialog();
         dialog.show(getFragmentManager(), "foobar2");
     }
