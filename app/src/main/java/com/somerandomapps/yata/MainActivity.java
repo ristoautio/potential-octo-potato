@@ -1,22 +1,20 @@
 package com.somerandomapps.yata;
 
 import android.app.DialogFragment;
-import android.arch.persistence.room.Room;
-import android.content.DialogInterface;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.somerandomapps.yata.dialog.TodoCreateDialog;
 import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
-import org.androidannotations.annotations.*;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
 import java.util.List;
 
@@ -51,15 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
         TodoItemAdapter adapter = new TodoItemAdapter(list, getApplicationContext());
         lvItems.setAdapter(adapter);
-        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TodoItem item = list.get(position);
-                Snackbar.make(view, "clicked item with name " + item.getName(), Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
-            }
-        });
-
     }
 
     @Click(R.id.fab)

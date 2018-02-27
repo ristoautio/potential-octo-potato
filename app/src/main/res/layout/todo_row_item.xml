@@ -3,14 +3,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
-    <TextView
+    <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:paddingBottom="42dp"
-            android:id="@+id/tvName"/>
+            android:paddingTop="22dp"
+            android:id="@+id/cbDone" android:layout_alignBottom="@+id/tvName"/>
+
+    <TextView
+            android:text="Hello"
+            android:height="60dp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:id="@+id/tvName"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/cbDone"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvCompeletDate"
+            android:layout_alignBottom="@+id/tvName"
+            android:layout_alignParentRight="true"
+            android:paddingRight="10dp"
+            android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>
