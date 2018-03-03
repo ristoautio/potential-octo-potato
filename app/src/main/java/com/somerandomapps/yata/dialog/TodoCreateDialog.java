@@ -17,15 +17,25 @@ import org.androidannotations.annotations.EFragment;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 @EFragment(R.layout.todo_create)
 public class TodoCreateDialog extends DialogFragment {
     private View view;
 
-    private static final String TAG = "TODO Fragment";
+    private static final String TAG = "TodoCreateDialog";
     private Calendar myCalendar = Calendar.getInstance();
     private Boolean useDeadline = false;
     private TextView tvDeadline;
+    private OnCloseListener closeListener;
+
+    public TodoCreateDialog() {
+        Log.d(TAG, "TodoCreateDialog: constructor");
+    }
+
+    public void setDismissListener(OnCloseListener closeListener) {
+        this.closeListener = closeListener;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -83,9 +93,8 @@ public class TodoCreateDialog extends DialogFragment {
             }
         });
 
-        // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(view)
+        return new AlertDialog.Builder(getActivity())
+                .setView(view)
                 .setMessage(R.string.item_create_title)
                 .setPositiveButton(R.string.item_create_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -99,10 +108,16 @@ public class TodoCreateDialog extends DialogFragment {
                             item.setDeadline(myCalendar.getTime());
                         }
                         db.todoItemDao().insertItemWithName(item);
+                        closeListener.onClose(dialog);
                     }
                 })
-                .setNegativeButton(R.string.item_create_cancel, null);
-        // Create the AlertDialog object and return it
-        return builder.create();
+                .setNegativeButton(R.string.item_create_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "onClick: cancel");
+                        closeListener.onClose(dialog);
+                    }
+                }).create();
+
     }
 }

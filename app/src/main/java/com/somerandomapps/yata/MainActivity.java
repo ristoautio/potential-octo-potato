@@ -1,13 +1,16 @@
 package com.somerandomapps.yata;
 
-import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.somerandomapps.yata.dialog.OnCloseListener;
 import com.somerandomapps.yata.dialog.TodoCreateDialog;
 import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
@@ -21,7 +24,7 @@ import java.util.List;
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "Main";
+    private static final String TAG = "MainActivity";
 
     @ViewById
     Toolbar toolbar;
@@ -53,7 +56,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Click(R.id.fab)
     protected void fabClicked(View view) {
-        DialogFragment dialog = new TodoCreateDialog();
+        TodoCreateDialog dialog = new TodoCreateDialog();
+        dialog.setDismissListener(new OnCloseListener() {
+            @Override
+            public void onClose(DialogInterface dialogInterface) {
+                Log.d(TAG, "onClose: closed dialog");
+                updateList();
+            }
+        });
         dialog.show(getFragmentManager(), "foobar2");
     }
 

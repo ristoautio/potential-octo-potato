@@ -1,6 +1,8 @@
 package com.somerandomapps.yata;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,8 @@ import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
 
 import java.text.DateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +28,7 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> implements View.OnCl
 
     private static class ViewHolder {
         TextView txtName;
-        TextView tvCompeletDate;
+        TextView tvDeadlinedate;
         CheckBox cbDone;
     }
 
@@ -32,6 +36,7 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> implements View.OnCl
         super(applicationContext, R.layout.todo_row_item, list);
         context = applicationContext;
         todoItems = list;
+        needUpdate();
     }
 
     @Override
@@ -47,7 +52,7 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> implements View.OnCl
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.todo_row_item, parent, false);
             viewHolder.txtName = convertView.findViewById(R.id.tvName);
-            viewHolder.tvCompeletDate = convertView.findViewById(R.id.tvCompeletDate);
+            viewHolder.tvDeadlinedate = convertView.findViewById(R.id.tvDeadlinedate);
             viewHolder.cbDone = convertView.findViewById(R.id.cbDone);
             convertView.setTag(viewHolder);
         } else {
@@ -57,16 +62,12 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> implements View.OnCl
 
         //FIXME dateformat from settings
         viewHolder.txtName.setText(todoItem.getName());
-//        Format dateFormat = android.text.format.DateFormat.getDateFormat(context);
-//        String pattern = ((SimpleDateFormat) dateFormat).toLocalizedPattern();
-        viewHolder.tvCompeletDate.setText(!todoItem.isDone() ? "" : DateFormat.getDateInstance().format(todoItem.getDoneAt()));
-//        viewHolder.tvCompeletDate.setText(!todoItem.isDone() ? "" : dateFormat.format(todoItem.getDoneAt()));
-
-
-        //        Animation animation = AnimationUtils.loadAnimation(context, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-//        result.startAnimation(AnimationUtils.loadAnimation(context, ));
-//        lastPosition = position;
-
+        viewHolder.tvDeadlinedate.setText(!todoItem.isHasDeadline() ? "" : DateFormat.getDateInstance().format(todoItem.getDeadline()));
+        if (todoItem.isDone()) {
+            viewHolder.txtName.setPaintFlags(viewHolder.txtName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            viewHolder.txtName.setPaintFlags(viewHolder.txtName.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+        }
 
         viewHolder.cbDone.setOnCheckedChangeListener(null);
         viewHolder.cbDone.setChecked(todoItem.isDone());
@@ -81,17 +82,44 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> implements View.OnCl
                         if(isChecked) {
                             item.setDone(true);
                             item.setDoneAt(new Date());
-                            viewHolder.tvCompeletDate.setText(DateFormat.getDateInstance().format(todoItem.getDoneAt()));
+                            viewHolder.txtName.setPaintFlags(viewHolder.txtName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                         } else {
                             item.setDone(false);
-                            viewHolder.tvCompeletDate.setText("");
+                            viewHolder.txtName.setPaintFlags(viewHolder.txtName.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                         }
 
                         database.todoItemDao().updateItem(item);
                     }
                 }
+                needUpdate();
             }
         });
         return convertView;
     }
+
+    private void needUpdate() {
+        Log.d(TAG, "needUpdate: do update");
+        Collections.sort(todoItems, new Comparator<TodoItem>() {
+            @Override
+            public int compare(TodoItem o1, TodoItem o2) {
+                if (o1.isDone() != o2.isDone()) {
+                    return o1.isDone() ? 1 : -1;
+                }
+
+                if(o1.isHasDeadline() != o2.isHasDeadline()){
+                    return o1.isHasDeadline() ? 1 : -1;
+                } else if ( o1.isHasDeadline() ){
+                    o1.getDeadline().compareTo(o2.getDeadline());
+                } else {
+                    o1.getCreatedAt().compareTo(o2.getCreatedAt());
+                }
+
+
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        notifyDataSetChanged();
+    }
+
+
 }
