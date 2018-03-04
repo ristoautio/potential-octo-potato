@@ -12,7 +12,7 @@
             android:id="@+id/etName"/>
 
     <Switch
-            android:text="Has deadline"
+            android:text="@string/has_deadline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/swHasDeadline"/>
 

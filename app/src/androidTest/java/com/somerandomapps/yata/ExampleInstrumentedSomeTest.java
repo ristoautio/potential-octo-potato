@@ -11,6 +11,9 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static junit.framework.Assert.assertEquals;
 
@@ -42,25 +45,20 @@ public class ExampleInstrumentedSomeTest {
     }
 
     @Test
-    public void testChangeText_sameActivity() {
-        // Type text and then press the button.
+    public void testAddingOneItem() {
+        onView(withId(R.id.lvItems)).check(matches(com.somerandomapps.yata.Matchers.withListSize(0)));
+        onView(withId(R.id.tvNoItems)).check(matches(isDisplayed()));
         onView(withId(R.id.fab)).perform(click());
-//        onView(withId(R.id.changeTextBt)).perform(click());
-//
-//        // Check that the text was changed.
-//        onView(withId(R.id.toolbar))
-//                .check(withId(R.id.fab).);
-    }
+        onView(withId(R.id.etName)).perform(typeText("Test 1"));
+        onView(withId(android.R.id.button2)).perform(click());
+        onView(withId(R.id.tvNoItems)).check(matches(isDisplayed()));
+        onView(withId(R.id.lvItems)).check(matches(com.somerandomapps.yata.Matchers.withListSize(0)));
 
-    @Test
-    public void somethingTest() {
-        // Type text and then press the button.
         onView(withId(R.id.fab)).perform(click());
-//        onView(withId(R.id.changeTextBt)).perform(click());
-//
-//        // Check that the text was changed.
-//        onView(withId(R.id.toolbar))
-//                .check(withId(R.id.fab).);
+        onView(withId(R.id.etName)).perform(typeText("Test 2"));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withId(R.id.lvItems)).check(matches(com.somerandomapps.yata.Matchers.withListSize(1)));
     }
 
 }
