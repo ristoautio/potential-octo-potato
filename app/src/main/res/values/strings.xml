@@ -5,4 +5,16 @@
     <string name="item_create_cancel">Cancel</string>
     <string name="item_create_ok">Add item</string>
     <string name="item_create_title">Add todo</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_settings">Settings</string>
+    <string name="preference_file_key">preferenceFile</string>
+    <string name="saved_retention_span_key">retention_span</string>
+    <string name="dialog_duration_select_title">Show old items for:</string>
+
+    <string name="dialog_duration_select_value_HOUR">1 Hour</string>
+    <string name="dialog_duration_select_value_DAY">1 Day</string>
+    <string name="dialog_duration_select_value_WEEK">1 Week</string>
+    <string name="dialog_duration_select_value_MONTH">1 Month</string>
+    <string name="display_done_items">Display done items</string>
+    <string name="display_done_items_desc">For how long checked items will be kept on the list</string>
 </resources>

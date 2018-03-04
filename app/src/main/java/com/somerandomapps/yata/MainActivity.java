@@ -1,7 +1,9 @@
 package com.somerandomapps.yata;
 
+import android.content.Context;
 import android.content.DialogInterface;
-import android.support.design.widget.Snackbar;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,11 +16,10 @@ import com.somerandomapps.yata.dialog.OnCloseListener;
 import com.somerandomapps.yata.dialog.TodoCreateDialog;
 import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.*;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @EActivity(R.layout.activity_main)
@@ -43,15 +44,32 @@ public class MainActivity extends AppCompatActivity {
         updateList();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: do update");
+        updateList();
+    }
+
     private void updateList() {
+        Calendar cal = getRetentionOfDoneItems();
         AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
-        list = db.todoItemDao().getAll();
+        list = db.todoItemDao().getUndoneAndDoneAfter(String.valueOf(cal.getTimeInMillis()));
         if (list.isEmpty()) {
             tvNoItems.setVisibility(View.VISIBLE);
         }
 
         TodoItemAdapter adapter = new TodoItemAdapter(list, getApplicationContext());
         lvItems.setAdapter(adapter);
+    }
+
+    private Calendar getRetentionOfDoneItems() {
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        int retentionSpanInHours = sharedPref.getInt(getString(R.string.saved_retention_span_key), SettingsActivity.Duration.getDefaultValue());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR, -retentionSpanInHours);
+        return cal;
     }
 
     @Click(R.id.fab)
@@ -83,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Log.d(TAG, "onOptionsItemSelected: start");
+            startActivity(new Intent(this, SettingsActivity_.class));
             return true;
         }
 
