@@ -31,6 +31,7 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis-google-19
+    - extra-android-support
 
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
@@ -63,6 +64,3 @@ install:
   - sdkmanager --uninstall "platforms;android-20"
   - sdkmanager --uninstall "platforms;android-21"
   - sdkmanager --uninstall "build-tools;21.1.2"
-
-  - echo y | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0-beta4"
-  - echo y | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.0-beta"
