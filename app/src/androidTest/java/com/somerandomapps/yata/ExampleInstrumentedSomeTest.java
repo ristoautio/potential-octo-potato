@@ -58,7 +58,7 @@ public class ExampleInstrumentedSomeTest {
         onView(withId(R.id.etName)).perform(typeText("Test 2"));
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withId(R.id.lvItems)).check(matches(com.somerandomapps.yata.Matchers.withListSize(1)));
+        onView(withId(R.id.lvItems)).check(matches(com.somerandomapps.yata.Matchers.withListSize(0)));
     }
 
 }
