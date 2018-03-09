@@ -64,5 +64,5 @@ install:
   - sdkmanager --uninstall "platforms;android-21"
   - sdkmanager --uninstall "build-tools;21.1.2"
 
-  - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
-  - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
+  - echo y | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0-beta4"
+  - echo y | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.0-beta"
