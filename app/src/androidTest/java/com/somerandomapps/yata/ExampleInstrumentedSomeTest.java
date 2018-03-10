@@ -2,8 +2,10 @@ package com.somerandomapps.yata;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import com.somerandomapps.yata.repository.AppDatabase;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,9 +15,11 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.*;
+import static com.somerandomapps.yata.Matchers.itemBeforeItem;
+import static com.somerandomapps.yata.Matchers.withListSize;
 import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.core.AllOf.allOf;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -23,42 +27,53 @@ import static junit.framework.Assert.assertEquals;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
+@SmallTest
 public class ExampleInstrumentedSomeTest {
 
-    String stringToBetyped;
+    @Before
+    public void before() {
+        Context context = InstrumentationRegistry.getContext();
+        AppDatabase db = AppDatabase.getAppDatabase(context);
+        db.todoItemDao().removeAll();
+    }
 
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-
         assertEquals("com.somerandomapps.yata", appContext.getPackageName());
     }
 
     @Rule
     public ActivityTestRule<MainActivity_> mActivityRule = new ActivityTestRule<>(MainActivity_.class);
 
-    @Before
-    public void initValidString() {
-        // Specify a valid string.
-        stringToBetyped = "Espresso";
-    }
-
     @Test
     public void testAddingOneItem() {
-        onView(withId(R.id.lvItems)).check(matches(com.somerandomapps.yata.Matchers.withListSize(0)));
+        onView(withId(R.id.lvItems)).check(matches(withListSize(0)));
         onView(withId(R.id.tvNoItems)).check(matches(isDisplayed()));
         onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.etName)).perform(typeText("Test 1"));
         onView(withId(android.R.id.button2)).perform(click());
         onView(withId(R.id.tvNoItems)).check(matches(isDisplayed()));
-        onView(withId(R.id.lvItems)).check(matches(com.somerandomapps.yata.Matchers.withListSize(0)));
+        onView(withId(R.id.lvItems)).check(matches(withListSize(0)));
 
+        addItemWithName("Test 2");
+        onView(withId(R.id.lvItems)).check(matches(withListSize(1)));
+    }
+
+    @Test
+    public void testMarkDone() {
+        addItemWithName("Item 1");
+        addItemWithName("Item 2");
+        onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
+        onView(allOf(withId(R.id.cbDone), hasSibling(withText("Item 1")))).perform(click());
+        onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
+    }
+
+    private void addItemWithName(String name) {
         onView(withId(R.id.fab)).perform(click());
-        onView(withId(R.id.etName)).perform(typeText("Test 2"));
+        onView(withId(R.id.etName)).perform(typeText(name));
         onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.lvItems)).check(matches(com.somerandomapps.yata.Matchers.withListSize(1)));
     }
 
 }

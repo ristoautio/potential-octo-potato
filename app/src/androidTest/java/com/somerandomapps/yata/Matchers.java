@@ -2,6 +2,7 @@ package com.somerandomapps.yata;
 
 import android.view.View;
 import android.widget.ListView;
+import com.somerandomapps.yata.repository.TodoItem;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -22,4 +23,40 @@ class Matchers {
             }
         };
     }
+
+    public static Matcher<View> itemBeforeItem(final String[] labels) {
+        return new TypeSafeMatcher<View>() {
+            ListView view;
+            private String expected;
+            private String actual;
+            private int pos;
+
+            @Override
+            protected boolean matchesSafely(View item) {
+                view = (ListView) item;
+
+                for (int i = 0; i < labels.length; i++) {
+                    if (!checkLabelAtPosition(i)){
+                        pos = i;
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            private boolean checkLabelAtPosition(int index) {
+                TodoItem todoItem = (TodoItem) view.getItemAtPosition(index);
+                expected = labels[index];
+                actual = todoItem.getName();
+                return expected.contentEquals(actual);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Expected " + expected + " but was " + actual + " at position " + pos);
+            }
+        };
+    }
+
 }

@@ -17,7 +17,6 @@ import org.androidannotations.annotations.EFragment;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 @EFragment(R.layout.todo_create)
 public class TodoCreateDialog extends DialogFragment {

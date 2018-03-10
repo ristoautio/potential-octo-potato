@@ -23,8 +23,13 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> implements View.OnCl
 
     private static final String TAG = "Todoadapter";
 
-    Context context;
-    List<TodoItem> todoItems;
+    private Context context;
+    private List<TodoItem> todoItems;
+
+    @Override
+    public void onClick(View v) {
+        Log.d(TAG, "onClick: clicked row");
+    }
 
     private static class ViewHolder {
         TextView txtName;
@@ -38,9 +43,6 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> implements View.OnCl
         todoItems = list;
         needUpdate();
     }
-
-    @Override
-    public void onClick(View v) { }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

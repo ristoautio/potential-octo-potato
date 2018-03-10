@@ -20,4 +20,7 @@ public interface TodoItemDao {
 
     @Update
     void updateItem(TodoItem item);
+
+    @Query("DELETE FROM todo_item")
+    void removeAll();
 }

@@ -16,7 +16,10 @@ import com.somerandomapps.yata.dialog.OnCloseListener;
 import com.somerandomapps.yata.dialog.TodoCreateDialog;
 import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
-import org.androidannotations.annotations.*;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -28,15 +31,15 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     @ViewById
-    Toolbar toolbar;
+    protected Toolbar toolbar;
 
     @ViewById
-    TextView tvNoItems;
+    protected TextView tvNoItems;
 
     @ViewById
-    ListView lvItems;
+    protected ListView lvItems;
 
-    List<TodoItem> list;
+    protected List<TodoItem> list;
 
     @AfterViews
     protected void afterViews() {
