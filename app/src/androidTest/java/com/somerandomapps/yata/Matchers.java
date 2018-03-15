@@ -39,7 +39,7 @@ class Matchers {
                     TodoItem listItem = (TodoItem) view.getItemAtPosition(i);
                     if (listItem.isHasDeadline() && listItem.getName().equalsIgnoreCase(itemName)) {
                         long diff = listItem.getDeadline().getTime() - deadline.getTime();
-                        if ((diff > -5000) && (diff < 5000)) {
+                        if ((diff > -60000) && (diff < 60000)) {
                             return true;
                         }
                     }
