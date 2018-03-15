@@ -7,6 +7,8 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import java.util.Date;
+
 class Matchers {
     public static Matcher<View> withListSize(final int size) {
         return new TypeSafeMatcher<View>() {
@@ -20,6 +22,34 @@ class Matchers {
             @Override
             public void describeTo(final Description description) {
                 description.appendText("ListView should have " + size + " items but had " + count);
+            }
+        };
+    }
+
+    public static Matcher<View> containsItemWithNameAndDeadline(final String itemName, final Date deadline) {
+        return new TypeSafeMatcher<View>() {
+            ListView view;
+            private String expected;
+            private String actual;
+
+            @Override
+            protected boolean matchesSafely(View item) {
+                view = (ListView) item;
+                for (int i = 0; i < view.getCount(); i++) {
+                    TodoItem listItem = (TodoItem) view.getItemAtPosition(i);
+                    if (listItem.isHasDeadline() && listItem.getName().equalsIgnoreCase(itemName)) {
+                        long diff = listItem.getDeadline().getTime() - deadline.getTime();
+                        if ((diff > -5000) && (diff < 5000)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Could not find item with name: " + itemName + " and deadline: " + deadline.toString());
             }
         };
     }

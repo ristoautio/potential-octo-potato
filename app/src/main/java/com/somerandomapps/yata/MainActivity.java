@@ -58,10 +58,7 @@ public class MainActivity extends AppCompatActivity {
         Calendar cal = getRetentionOfDoneItems();
         AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
         list = db.todoItemDao().getUndoneAndDoneAfter(String.valueOf(cal.getTimeInMillis()));
-        if (list.isEmpty()) {
-            tvNoItems.setVisibility(View.VISIBLE);
-        }
-
+        tvNoItems.setVisibility(list.isEmpty() ? View.VISIBLE : View.INVISIBLE);
         TodoItemAdapter adapter = new TodoItemAdapter(list, getApplicationContext());
         lvItems.setAdapter(adapter);
     }

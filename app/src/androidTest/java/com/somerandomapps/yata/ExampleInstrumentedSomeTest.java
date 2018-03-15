@@ -11,13 +11,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Date;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static com.somerandomapps.yata.Matchers.itemBeforeItem;
-import static com.somerandomapps.yata.Matchers.withListSize;
+import static com.somerandomapps.yata.Matchers.*;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.core.AllOf.allOf;
 
@@ -49,6 +50,8 @@ public class ExampleInstrumentedSomeTest {
 
     @Test
     public void testAddingOneItem() {
+        onView(withId(R.id.tvNoItems)).check(matches(isDisplayed()));
+
         onView(withId(R.id.lvItems)).check(matches(withListSize(0)));
         onView(withId(R.id.tvNoItems)).check(matches(isDisplayed()));
         onView(withId(R.id.fab)).perform(click());
@@ -59,6 +62,7 @@ public class ExampleInstrumentedSomeTest {
 
         addItemWithName("Test 2");
         onView(withId(R.id.lvItems)).check(matches(withListSize(1)));
+        onView(withId(R.id.tvNoItems)).check(matches(withEffectiveVisibility(Visibility.INVISIBLE)));
     }
 
     @Test
@@ -68,6 +72,27 @@ public class ExampleInstrumentedSomeTest {
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
         onView(allOf(withId(R.id.cbDone), hasSibling(withText("Item 1")))).perform(click());
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
+    }
+
+    @Test
+    public void testWithDoneDate() {
+        addItemWithName("Item 1");
+        addItemWithNameAndDeadline("Item 2");
+
+        onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
+        onView(allOf(withId(R.id.cbDone), hasSibling(withText("Item 1")))).perform(click());
+        onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
+
+        onView(withId(R.id.lvItems)).check(matches(containsItemWithNameAndDeadline("Item 2", new Date())));
+    }
+
+    private void addItemWithNameAndDeadline(String name) {
+        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.etName)).perform(typeText(name));
+
+        onView(withId(R.id.swHasDeadline)).perform(click());
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(android.R.id.button1)).perform(click());
     }
 
     private void addItemWithName(String name) {
