@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,10 +17,7 @@ import com.somerandomapps.yata.dialog.OnCloseListener;
 import com.somerandomapps.yata.dialog.TodoCreateDialog;
 import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.*;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -54,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
         updateList();
     }
 
-    private void updateList() {
+//    @Background()
+    protected void updateList() {
         Calendar cal = getRetentionOfDoneItems();
         AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
         list = db.todoItemDao().getUndoneAndDoneAfter(String.valueOf(cal.getTimeInMillis()));
@@ -104,8 +103,18 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onOptionsItemSelected: start");
             startActivity(new Intent(this, SettingsActivity_.class));
             return true;
+        } else if (id == R.id.action_clearDone) {
+            clearDoneItems();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void clearDoneItems() {
+        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+        db.todoItemDao().removeDoneItems();
+        Log.d(TAG, "clearDoneItems: removed done items");
+        Snackbar.make(getWindow().getDecorView().getRootView(), R.string.action_clearedDone, 3000).show();
+        updateList();
     }
 }

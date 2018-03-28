@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.*;
 import com.somerandomapps.yata.R;
 import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EFragment;
 
 import java.text.DateFormat;

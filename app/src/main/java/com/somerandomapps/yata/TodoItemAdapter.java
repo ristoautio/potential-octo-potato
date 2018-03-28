@@ -32,9 +32,9 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> implements View.OnCl
     }
 
     private static class ViewHolder {
-        TextView txtName;
-        TextView tvDeadlinedate;
-        CheckBox cbDone;
+        private TextView txtName;
+        private TextView tvDeadlinedate;
+        private CheckBox cbDone;
     }
 
     public TodoItemAdapter(List<TodoItem> list, Context applicationContext) {

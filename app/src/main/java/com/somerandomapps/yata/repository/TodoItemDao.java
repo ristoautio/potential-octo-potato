@@ -9,10 +9,7 @@ import java.util.List;
 
 @Dao
 public interface TodoItemDao {
-    @Query("SELECT * FROM todo_item order by done asc")
-    List<TodoItem> getAll();
-
-    @Query("SELECT * FROM todo_item where done = 0 or ( done = 1 and done_at > :includeDoneAfter ) order by done asc")
+    @Query("SELECT * FROM todo_item where done = 0 or ( done = 1 and done_at > :includeDoneAfter ) and deleted = 0 order by done asc")
     List<TodoItem> getUndoneAndDoneAfter(String includeDoneAfter);
 
     @Insert
@@ -23,4 +20,7 @@ public interface TodoItemDao {
 
     @Query("DELETE FROM todo_item")
     void removeAll();
+
+    @Query("UPDATE todo_item set deleted = 1, deleted_at = datetime() where done = 1 and deleted = 0")
+    void removeDoneItems();
 }

@@ -6,22 +6,31 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
+
 @Database(version = 1, entities = {TodoItem.class}, exportSchema = false)
 @TypeConverters({DateConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract TodoItemDao todoItemDao();
 
     private static AppDatabase INSTANCE;
+    private static String DATABASE_NAME = "yata-db";
 
-    public static AppDatabase getAppDatabase(Context context) {
+    public abstract TodoItemDao todoItemDao();
+
+    public static AppDatabase getAppDatabase(final Context context) {
         if (INSTANCE == null) {
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "yata-db")
-                    // allow queries on the main thread.
-                    // FIXME Don't do this on a real app! See PersistenceBasicSample for an example.
-                    .allowMainThreadQueries()
-                    .build();
+            synchronized (AppDatabase.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = buildDatabase(context.getApplicationContext());
+                }
+            }
         }
         return INSTANCE;
+    }
+
+    private static AppDatabase buildDatabase(final Context appContext) {
+        return Room.databaseBuilder(appContext.getApplicationContext(), AppDatabase.class, DATABASE_NAME)
+                .allowMainThreadQueries()
+                .build();
     }
 
     public static void destroyInstance() {

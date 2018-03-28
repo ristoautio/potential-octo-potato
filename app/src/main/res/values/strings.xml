@@ -18,4 +18,6 @@
     <string name="display_done_items">Display done items</string>
     <string name="display_done_items_desc">For how long checked items will be kept on the list</string>
     <string name="has_deadline">Has deadline</string>
+    <string name="action_clearDone">Clear done items</string>
+    <string name="action_clearedDone">Removed items marked done</string>
 </resources>
