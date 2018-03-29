@@ -133,18 +133,21 @@ public class ExampleInstrumentedSomeTest {
         addItemWithName("Item 2");
         addItemWithName("Item 3");
         addItemWithName("Item 4");
+        waitFor(2000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"})));
         markDoneItemWithText("Item 1");
 
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        waitFor(500);
+        waitFor(2000);
         onView(withText(R.string.action_clearDone)).perform(click());
+        waitFor(2000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 3", "Item 4"})));
 
         markDoneItemWithText("Item 2");
         markDoneItemWithText("Item 3");
         markDoneItemWithText("Item 4");
+        waitFor(2000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 3", "Item 4"})));
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
