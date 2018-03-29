@@ -2,6 +2,7 @@ package com.somerandomapps.yata;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
+import org.androidannotations.annotations.Background;
 
 import java.text.DateFormat;
 import java.util.Collections;
@@ -78,7 +80,6 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> implements View.OnCl
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                AppDatabase database = AppDatabase.getAppDatabase(context);
                 for (TodoItem item : todoItems) {
                     if (item.getId() == todoItem.getId()) {
                         if(isChecked) {
@@ -90,13 +91,23 @@ public class TodoItemAdapter extends ArrayAdapter<TodoItem> implements View.OnCl
                             viewHolder.txtName.setPaintFlags(viewHolder.txtName.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                         }
 
-                        database.todoItemDao().updateItem(item);
+                        updateItem(item);
                     }
                 }
                 needUpdate();
             }
         });
         return convertView;
+    }
+
+    private void updateItem(final TodoItem item) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AppDatabase database = AppDatabase.getAppDatabase(context);
+                database.todoItemDao().updateItem(item);
+            }
+        }).start();
     }
 
     private void needUpdate() {

@@ -19,6 +19,7 @@ import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
 import org.androidannotations.annotations.*;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -52,11 +53,21 @@ public class MainActivity extends AppCompatActivity {
         updateList();
     }
 
-//    @Background()
-    protected void updateList() {
-        Calendar cal = getRetentionOfDoneItems();
-        AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
-        list = db.todoItemDao().getUndoneAndDoneAfter(String.valueOf(cal.getTimeInMillis()));
+    private void updateList() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Calendar cal = getRetentionOfDoneItems();
+                AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
+                list = db.todoItemDao().getUndoneAndDoneAfter(String.valueOf(cal.getTimeInMillis()));
+                updateItemsInView();
+            }
+        }).start();
+    }
+
+    @UiThread
+    protected void updateItemsInView() {
+        list = list == null ? new ArrayList<TodoItem>() : list;
         tvNoItems.setVisibility(list.isEmpty() ? View.VISIBLE : View.INVISIBLE);
         TodoItemAdapter adapter = new TodoItemAdapter(list, getApplicationContext());
         lvItems.setAdapter(adapter);
@@ -110,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void clearDoneItems() {
+    @Background()
+    protected void clearDoneItems() {
         AppDatabase db = AppDatabase.getAppDatabase(getApplicationContext());
         db.todoItemDao().removeDoneItems();
         Log.d(TAG, "clearDoneItems: removed done items");

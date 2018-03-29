@@ -101,14 +101,13 @@ public class TodoCreateDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         EditText valueView = view.findViewById(R.id.etName); //here
                         String name = valueView.getText().toString();
-                        AppDatabase db = AppDatabase.getAppDatabase(null);
                         TodoItem item = new TodoItem();
                         item.setName(name);
                         item.setHasDeadline(useDeadline);
                         if (useDeadline) {
                             item.setDeadline(myCalendar.getTime());
                         }
-                        db.todoItemDao().insertItemWithName(item);
+                        saveItem(item);
                         closeListener.onClose(dialog);
                     }
                 })
@@ -119,6 +118,17 @@ public class TodoCreateDialog extends DialogFragment {
                         closeListener.onClose(dialog);
                     }
                 }).create();
+
+    }
+
+    private void saveItem(final TodoItem item) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AppDatabase db = AppDatabase.getAppDatabase(null);
+                db.todoItemDao().insertItemWithName(item);
+            }
+        }).start();
 
     }
 }
