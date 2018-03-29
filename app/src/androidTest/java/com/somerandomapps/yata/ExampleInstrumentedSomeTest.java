@@ -41,6 +41,15 @@ public class ExampleInstrumentedSomeTest {
         db.todoItemDao().removeAll();
     }
 
+    private void waitFor(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
@@ -58,6 +67,7 @@ public class ExampleInstrumentedSomeTest {
         onView(withId(R.id.lvItems)).check(matches(withListSize(0)));
         onView(withId(R.id.tvNoItems)).check(matches(isDisplayed()));
         onView(withId(R.id.fab)).perform(click());
+        waitFor(500);
         onView(withId(R.id.etName)).perform(typeText("Test 1"));
         onView(withId(android.R.id.button2)).perform(click());
         onView(withId(R.id.tvNoItems)).check(matches(isDisplayed()));
@@ -92,6 +102,7 @@ public class ExampleInstrumentedSomeTest {
         addItemWithName("Item 1");
         addItemWithNameAndDeadline("Item 2");
 
+        waitFor(500);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
         markDoneItemWithText("Item 1");
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
@@ -101,8 +112,8 @@ public class ExampleInstrumentedSomeTest {
 
     private void addItemWithNameAndDeadline(String name) {
         onView(withId(R.id.fab)).perform(click());
+        waitFor(500);
         onView(withId(R.id.etName)).perform(typeText(name));
-
         onView(withId(R.id.swHasDeadline)).perform(click());
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(android.R.id.button1)).perform(click());
@@ -110,18 +121,14 @@ public class ExampleInstrumentedSomeTest {
 
     private void addItemWithName(String name) {
         onView(withId(R.id.fab)).perform(click());
+        waitFor(500);
         onView(withId(R.id.etName)).perform(typeText(name));
         onView(withId(android.R.id.button1)).perform(click());
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            fail();
-        }
+        waitFor(500);
     }
 
     @Test
-    public void testClearingDoneItems() throws InterruptedException {
+    public void testClearingDoneItems() {
         addItemWithName("Item 1");
         addItemWithName("Item 2");
         addItemWithName("Item 3");
@@ -131,7 +138,7 @@ public class ExampleInstrumentedSomeTest {
 
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        Thread.sleep(200);
+        waitFor(500);
         onView(withText(R.string.action_clearDone)).perform(click());
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 3", "Item 4"})));
 
@@ -141,7 +148,7 @@ public class ExampleInstrumentedSomeTest {
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 3", "Item 4"})));
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        Thread.sleep(200);
+        waitFor(500);
         onView(withText(R.string.action_clearDone)).perform(click());
         onView(withId(R.id.tvNoItems)).check(matches(isDisplayed()));
     }
