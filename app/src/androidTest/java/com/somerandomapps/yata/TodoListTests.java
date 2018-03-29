@@ -32,7 +32,7 @@ import static org.hamcrest.core.AllOf.allOf;
  */
 @RunWith(AndroidJUnit4.class)
 @SmallTest
-public class ExampleInstrumentedSomeTest {
+public class TodoListTests {
 
     @Before
     public void before() {
@@ -82,10 +82,10 @@ public class ExampleInstrumentedSomeTest {
     public void testMarkDone() {
         addItemWithName("Item 1");
         addItemWithName("Item 2");
-        waitFor(2000);
+        waitFor(3000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
         markDoneItemWithText("Item 1");
-        waitFor(2000);
+        waitFor(3000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
     }
 
