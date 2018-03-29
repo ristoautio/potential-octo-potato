@@ -2,7 +2,6 @@ package com.somerandomapps.yata;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import com.somerandomapps.yata.repository.AppDatabase;
 import com.somerandomapps.yata.repository.TodoItem;
-import org.androidannotations.annotations.Background;
 
 import java.text.DateFormat;
 import java.util.Collections;

@@ -13,13 +13,16 @@ import org.junit.runner.RunWith;
 
 import java.util.Date;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
 import static com.somerandomapps.yata.Matchers.*;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static org.hamcrest.core.AllOf.allOf;
 
 /**
@@ -70,8 +73,18 @@ public class ExampleInstrumentedSomeTest {
         addItemWithName("Item 1");
         addItemWithName("Item 2");
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
-        onView(allOf(withId(R.id.cbDone), hasSibling(withText("Item 1")))).perform(click());
+        markDoneItemWithText("Item 1");
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
+    }
+
+    private void markDoneItemWithText(String text) {
+        onView(allOf(withId(R.id.cbDone), hasSibling(withText(text)))).perform(click());
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
@@ -80,7 +93,7 @@ public class ExampleInstrumentedSomeTest {
         addItemWithNameAndDeadline("Item 2");
 
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
-        onView(allOf(withId(R.id.cbDone), hasSibling(withText("Item 1")))).perform(click());
+        markDoneItemWithText("Item 1");
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
 
         onView(withId(R.id.lvItems)).check(matches(containsItemWithNameAndDeadline("Item 2", new Date())));
@@ -99,6 +112,32 @@ public class ExampleInstrumentedSomeTest {
         onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.etName)).perform(typeText(name));
         onView(withId(android.R.id.button1)).perform(click());
+    }
+
+    @Test
+    public void testClearingDoneItems() throws InterruptedException {
+        addItemWithName("Item 1");
+        addItemWithName("Item 2");
+        addItemWithName("Item 3");
+        addItemWithName("Item 4");
+        onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"})));
+        markDoneItemWithText("Item 1");
+
+
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        Thread.sleep(200);
+        onView(withText(R.string.action_clearDone)).perform(click());
+        onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 3", "Item 4"})));
+
+        markDoneItemWithText("Item 2");
+        markDoneItemWithText("Item 3");
+        markDoneItemWithText("Item 4");
+        onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 3", "Item 4"})));
+
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        Thread.sleep(200);
+        onView(withText(R.string.action_clearDone)).perform(click());
+        onView(withId(R.id.tvNoItems)).check(matches(isDisplayed()));
     }
 
 }

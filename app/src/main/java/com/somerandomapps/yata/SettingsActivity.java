@@ -20,6 +20,15 @@ import org.androidannotations.annotations.ViewById;
 public class SettingsActivity extends AppCompatActivity {
 
     private static final String TAG = "SettingsActivity";
+    private SharedPreferences sharedPref;
+
+    @ViewById
+    protected Toolbar toolbar;
+
+    @ViewById
+    protected TextView tvCurrentRetentionDuration;
+
+    private Resources resources;
 
     public enum Duration {
         HOUR(1),
@@ -27,13 +36,12 @@ public class SettingsActivity extends AppCompatActivity {
         WEEK(24 * 7),
         MONTH(24 * 7 * 4);
 
+        private int hours;
         private static int defaultValue;
 
         Duration(int hours) {
             this.hours = hours;
         }
-
-        private int hours;
 
         public static Duration findBy(int i) {
             for (Duration duration : Duration.values()) {
@@ -47,19 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
         public static int getDefaultValue() {
             return Duration.DAY.hours;
         }
-    }
-
-    ;
-
-    private SharedPreferences sharedPref;
-
-    @ViewById
-    Toolbar toolbar;
-
-    @ViewById
-    TextView tvCurrentRetentionDuration;
-
-    private Resources resources;
+    };
 
     @AfterViews
     protected void afterViews() {
