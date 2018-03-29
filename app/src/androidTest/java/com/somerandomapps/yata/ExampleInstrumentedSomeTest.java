@@ -82,8 +82,10 @@ public class ExampleInstrumentedSomeTest {
     public void testMarkDone() {
         addItemWithName("Item 1");
         addItemWithName("Item 2");
+        waitFor(2000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
         markDoneItemWithText("Item 1");
+        waitFor(2000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
     }
 
@@ -102,9 +104,10 @@ public class ExampleInstrumentedSomeTest {
         addItemWithName("Item 1");
         addItemWithNameAndDeadline("Item 2");
 
-        waitFor(500);
+        waitFor(2000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
         markDoneItemWithText("Item 1");
+        waitFor(2000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
 
         onView(withId(R.id.lvItems)).check(matches(containsItemWithNameAndDeadline("Item 2", new Date())));
