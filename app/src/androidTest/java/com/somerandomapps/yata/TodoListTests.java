@@ -74,6 +74,7 @@ public class TodoListTests {
         onView(withId(R.id.lvItems)).check(matches(withListSize(0)));
 
         addItemWithName("Test 2");
+        waitFor(2000);
         onView(withId(R.id.lvItems)).check(matches(withListSize(1)));
         onView(withId(R.id.tvNoItems)).check(matches(withEffectiveVisibility(Visibility.INVISIBLE)));
     }
