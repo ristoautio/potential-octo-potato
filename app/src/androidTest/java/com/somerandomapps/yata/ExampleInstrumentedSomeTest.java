@@ -112,6 +112,12 @@ public class ExampleInstrumentedSomeTest {
         onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.etName)).perform(typeText(name));
         onView(withId(android.R.id.button1)).perform(click());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
