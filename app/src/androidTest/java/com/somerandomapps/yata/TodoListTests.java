@@ -86,7 +86,7 @@ public class TodoListTests {
         waitFor(3000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
         markDoneItemWithText("Item 1");
-        waitFor(3001);
+        waitFor(3000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
     }
 
