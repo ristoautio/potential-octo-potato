@@ -74,7 +74,7 @@ public class TodoListTests {
         onView(withId(R.id.lvItems)).check(matches(withListSize(0)));
 
         addItemWithName("Test 2");
-        waitFor(2000);
+        waitFor(5000);
         onView(withId(R.id.lvItems)).check(matches(withListSize(1)));
         onView(withId(R.id.tvNoItems)).check(matches(withEffectiveVisibility(Visibility.INVISIBLE)));
     }
@@ -83,10 +83,10 @@ public class TodoListTests {
     public void testMarkDone() {
         addItemWithName("Item 1");
         addItemWithName("Item 2");
-        waitFor(3000);
+        waitFor(5000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 1", "Item 2"})));
         markDoneItemWithText("Item 1");
-        waitFor(3000);
+        waitFor(5000);
         onView(withId(R.id.lvItems)).check(matches(itemBeforeItem(new String[]{"Item 2", "Item 1"})));
     }
 
